@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OP-001 · Apertura del restaurante</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--tx:#1d1d1b;--mut:#6b6a66;--bd:#dcdad4;--ac:#8a2a1c;--ok:#1f7a45;--no:#b3261e;--okb:#e3f4ea;--nob:#fbe6e4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171716;--card:#232321;--tx:#f1efea;--mut:#a3a19a;--bd:#3a3935;--ac:#e0705c;--ok:#5fcf8c;--no:#ff8a80;--okb:#16301f;--nob:#3a1e1c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171716;--card:#232321;--tx:#f1efea;--mut:#a3a19a;--bd:#3a3935;--ac:#e0705c;--ok:#5fcf8c;--no:#ff8a80;--okb:#16301f;--nob:#3a1e1c;color-scheme:dark}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 56px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;overflow-x:hidden;background:var(--bg);color:var(--tx);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--card);z-index:10}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--card);border-bottom:1px solid var(--bd);padding:8px 14px}
+.bar div{max-width:760px;margin:auto;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mut)}
+.pg{flex:1;height:8px;background:var(--bd);border-radius:9px;overflow:hidden}.pg i{display:block;height:100%;width:0;background:var(--ok);transition:width .25s}
+main{max-width:760px;margin:auto;padding:14px 14px 40px}
+h1{font-size:20px;margin:6px 0 2px}.sub{color:var(--mut);font-size:13px;margin:0 0 14px}
+h2{font-size:16px;margin:0 0 10px;color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:14px}
+label.f{display:block;font-size:13px;color:var(--mut);margin-bottom:10px}
+input[type=text],input[type=date],input[type=time],textarea{display:block;width:100%;min-width:0;min-height:44px;margin-top:4px;padding:10px;font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:9px}
+textarea{min-height:80px;resize:vertical}
+.g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+@media (max-width:480px){.g2{grid-template-columns:minmax(0,1fr)}.yn button{min-width:48px;padding:9px 10px}}
+.row{padding:10px 0;border-top:1px solid var(--bd)}.row:first-of-type{border-top:0}
+.rt{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.rt span{flex:1;min-width:0}
+.yn{display:flex;gap:6px}
+.yn button{min-width:54px;padding:9px 12px;font-weight:600;font-size:16px;font-family:inherit;border:1.5px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:9px;cursor:pointer}
+.yn button.s.si{background:var(--okb);border-color:var(--ok);color:var(--ok)}
+.yn button.n.no{background:var(--nob);border-color:var(--no);color:var(--no)}
+.row input[type=text]{font-size:16px;padding:9px}
+.st{border:1px dashed var(--bd);border-radius:11px;padding:10px;margin-top:10px}
+.sig{width:100%;height:90px;background:#fff;border:1px solid var(--bd);border-radius:9px;touch-action:none;display:block}
+.lnk{background:none;border:0;color:var(--ac);font:inherit;font-size:13px;padding:6px 0;cursor:pointer}
+.btn{width:100%;padding:15px;font-weight:700;font-size:17px;font-family:inherit;border:0;border-radius:12px;background:var(--ac);color:#fff;cursor:pointer}
+.btn2{width:100%;padding:12px;margin-top:10px;font-weight:600;font-size:16px;font-family:inherit;border:1.5px solid var(--bd);border-radius:12px;background:var(--card);color:var(--tx);cursor:pointer}
+#msg{margin:10px 0 0;font-size:14px;min-height:20px}.err{color:var(--no)}.okm{color:var(--ok)}
+</style>
+</head>
+<body>
+<div class="bar"><div><b id="cnt">0/0</b><span class="pg"><i id="pgi"></i></span><span>respondidos</span></div></div>
+<main>
+<h1>Formato oficial de apertura del restaurante</h1>
+<p class="sub">Código OP-001 · Versión 1.0 · Frecuencia diaria · Responsable: Administrador</p>
+<div class="card">
+ <div class="g2">
+  <label class="f">Fecha<input type="date" id="fecha"></label>
+  <label class="f">Administrador responsable (tu nombre)<input type="text" id="admin" placeholder="Nombre completo" autocomplete="name"></label>
+  <label class="f">Hora programada de apertura<input type="time" id="hprog"></label>
+  <label class="f">Hora real de apertura<input type="time" id="hreal"></label>
+ </div>
+</div>
+<div id="secs"></div>
+<div class="card"><h2>5. Personal</h2><div id="staff"></div>
+ <button class="lnk" id="addst">+ Agregar persona</button> <button class="lnk" id="delst">− Quitar última</button></div>
+<div class="card"><h2>Observaciones</h2><textarea id="obs" placeholder="Observaciones generales"></textarea></div>
+<div class="card"><h2>Administrador</h2><div id="admsig"></div></div>
+<button class="btn" id="gen">Generar PDF</button>
+<div id="msg" role="status"></div>
+<button class="btn2" id="rst">Empezar un formato nuevo</button>
+</main>
+<script>
+(function(){try{
+const SECS=[
+{t:"1. Inspección Exterior",k:"e",i:["Fachada limpia","Aviso iluminado","Parqueadero limpio","Entrada despejada","Jardines limpios","Basuras retiradas"]},
+{t:"2. Inspección del Comedor",k:"c",i:["Mesas limpias","Sillas limpias","Pisos limpios","Música ambiental","Aire acondicionado","Iluminación","Carta disponible","Entrada de cortesía preparada"]},
+{t:"3. Caja",k:"x",i:["Fondo de caja recibido","POS funcionando","Impresora funcionando","Tablets funcionando","Internet funcionando","Sistema operativo iniciado"],monto:0},
+{t:"4. Cocina",k:"k",i:["Temperatura neveras registrada","Temperatura congeladores registrada","Mise en place completa","Aceite revisado","Utensilios completos","Estaciones organizadas","Productos etiquetados","PEPS aplicado"]}
+];
+const KEY="op001-v1";
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const blank=()=>({fecha:today(),admin:"",hprog:"",hreal:"",items:{},monto:"",staff:[{},{},{}],obs:"",firma:""});
+let S=blank();
+try{const r=localStorage.getItem(KEY);if(r){S=Object.assign(blank(),JSON.parse(r))}}catch(e){}
+let tm;const save=()=>{clearTimeout(tm);tm=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}},300)};
+const $=id=>document.getElementById(id);
+function el(t,a,...c){const e=document.createElement(t);for(const k in a||{}){if(k==="class")e.className=a[k];else if(k.startsWith("on"))e.addEventListener(k.slice(2),a[k]);else e.setAttribute(k,a[k])}c.flat().forEach(x=>e.append(x));return e}
+const ALL=[];SECS.forEach(s=>s.i.forEach((_,j)=>ALL.push(s.k+j)));
+function progress(){let n=ALL.filter(k=>S.items[k]&&S.items[k].v).length;S.staff.forEach(p=>{});$("cnt").textContent=n+"/"+ALL.length;$("pgi").style.width=(100*n/ALL.length)+"%"}
+function yn(get,set){const w=el("div",{class:"yn"});const bs=el("button",{type:"button",class:"s"},"Sí"),bn=el("button",{type:"button",class:"n"},"No");
+ const paint=()=>{const v=get();bs.classList.toggle("si",v==="si");bn.classList.toggle("no",v==="no")};
+ bs.onclick=()=>{set(get()==="si"?"":"si");paint();progress();save()};bn.onclick=()=>{set(get()==="no"?"":"no");paint();progress();save()};
+ paint();w.append(bs,bn);return w}
+function pad(cv,get,set){const c=cv.getContext("2d");c.lineWidth=2.2;c.lineCap="round";c.strokeStyle="#111";
+ const img=get();if(img){const im=new Image();im.onload=()=>c.drawImage(im,0,0,cv.width,cv.height);im.src=img}
+ let dr=false;const p=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height]};
+ cv.onpointerdown=e=>{dr=true;cv.setPointerCapture(e.pointerId);const[x,y]=p(e);c.beginPath();c.moveTo(x,y);c.lineTo(x+.1,y+.1);c.stroke();e.preventDefault()};
+ cv.onpointermove=e=>{if(!dr)return;const[x,y]=p(e);c.lineTo(x,y);c.stroke()};
+ const end=()=>{if(!dr)return;dr=false;set(cv.toDataURL("image/png"));save()};cv.onpointerup=end;cv.onpointercancel=end;
+ return()=>{c.clearRect(0,0,cv.width,cv.height);set("");save()}}
+function sigBlock(get,set){const cv=el("canvas",{class:"sig",width:400,height:140});const clr=pad(cv,get,set);
+ return el("div",{},el("div",{class:"sub"},"Firma (dibuja con el dedo o el mouse)"),cv,el("button",{type:"button",class:"lnk",onclick:clr},"Borrar firma"))}
+function renderSecs(){const root=$("secs");root.textContent="";
+ SECS.forEach(s=>{const card=el("div",{class:"card"},el("h2",{},s.t));
+  s.i.forEach((lab,j)=>{const k=s.k+j;const it=S.items[k]=S.items[k]||{v:"",o:""};
+   const row=el("div",{class:"row"},el("div",{class:"rt"},el("span",{},lab),yn(()=>it.v,v=>it.v=v)));
+   if(s.monto===j){const m=el("input",{type:"text",inputmode:"decimal",placeholder:"Monto: $",value:S.monto});m.oninput=()=>{S.monto=m.value;save()};row.append(el("div",{style:"margin-top:8px"},m))}
+   const o=el("input",{type:"text",placeholder:"Observaciones",value:it.o});o.oninput=()=>{it.o=o.value;save()};row.append(el("div",{style:"margin-top:8px"},o));card.append(row)});
+  root.append(card)})}
+function renderStaff(){const r=$("staff");r.textContent="";
+ S.staff.forEach((p,i)=>{const n=el("input",{type:"text",placeholder:"Nombre",value:p.n||""}),c=el("input",{type:"text",placeholder:"Cargo",value:p.c||""});
+  n.oninput=()=>{p.n=n.value;save()};c.oninput=()=>{p.c=c.value;save()};
+  r.append(el("div",{class:"st"},el("div",{class:"g2"},n,c),
+   el("div",{class:"rt",style:"margin-top:10px"},el("span",{},"Uniforme"),yn(()=>p.u||"",v=>p.u=v)),
+   el("div",{class:"rt",style:"margin-top:8px;margin-bottom:10px"},el("span",{},"Presentación"),yn(()=>p.p||"",v=>p.p=v)),
+   sigBlock(()=>p.f||"",v=>p.f=v)))})}
+$("addst").onclick=()=>{S.staff.push({});renderStaff();save()};
+$("delst").onclick=()=>{if(S.staff.length>1){S.staff.pop();renderStaff();save()}};
+[["fecha","fecha"],["admin","admin"],["hprog","hprog"],["hreal","hreal"],["obs","obs"]].forEach(([id,k])=>{const e=$(id);e.value=S[k]||"";e.oninput=()=>{S[k]=e.value;save()}});
+$("admsig").append(sigBlock(()=>S.firma,v=>S.firma=v));
+function build(){
+ const {jsPDF}=window.jspdf;const d=new jsPDF({unit:"mm",format:"letter"});const M=15,W=215.9;let y=16;
+ const nl=(h)=>{if(y+h>262){d.addPage();y=16}};
+ const fd=s=>{if(!s)return"________";const[a,b,c]=s.split("-");return c+"/"+b+"/"+a};
+ d.setFont("helvetica","bold");d.setFontSize(14);d.text("FORMATO OFICIAL DE APERTURA DEL RESTAURANTE",M,y);y+=6;
+ d.setFont("helvetica","normal");d.setFontSize(9);d.setTextColor(90);d.text("Código: OP-001   ·   Versión: 1.0   ·   Frecuencia: Diaria   ·   Responsable: Administrador",M,y);y+=8;d.setTextColor(0);d.setFontSize(10.5);
+ [["Fecha",fd(S.fecha)],["Hora programada de apertura",S.hprog||"________"],["Hora real de apertura",S.hreal||"________"],["Administrador responsable",S.admin||"________"]].forEach(([a,b])=>{d.setFont("helvetica","bold");d.text(a+": ",M,y);d.setFont("helvetica","normal");d.text(String(b),M+d.getTextWidth(a+": ")+1,y);y+=6});
+ y+=2;
+ SECS.forEach(s=>{nl(18);d.setFillColor(235,230,225);d.rect(M,y-4.5,W-2*M,7,"F");d.setFont("helvetica","bold");d.setFontSize(11);d.text(s.t,M+2,y);y+=7;
+  d.setFontSize(9.5);d.setFont("helvetica","bold");d.text("Actividad",M+2,y);d.text("Sí / No",112,y);d.text("Observaciones",134,y);y+=2;
+  s.i.forEach((lab,j)=>{const it=S.items[s.k+j]||{};let t=lab;if(s.monto===j&&S.monto)t+=" (Monto: $"+S.monto+")";
+   const a=d.splitTextToSize(t,92),o=d.splitTextToSize(it.o||"",W-M-134);const h=Math.max(a.length,o.length)*4.6+3;nl(h);
+   d.setDrawColor(210);d.line(M,y,W-M,y);d.setFont("helvetica","normal");d.text(a,M+2,y+4.5);
+   d.setFont("helvetica","bold");if(it.v==="si"){d.setTextColor(31,122,69);d.text("Sí",114,y+4.5)}else if(it.v==="no"){d.setTextColor(179,38,30);d.text("No",114,y+4.5)}else{d.setTextColor(150);d.text("—",114,y+4.5)}
+   d.setTextColor(0);d.setFont("helvetica","normal");d.text(o,134,y+4.5);y+=h});
+  d.line(M,y,W-M,y);y+=8});
+ nl(30);d.setFillColor(235,230,225);d.rect(M,y-4.5,W-2*M,7,"F");d.setFont("helvetica","bold");d.setFontSize(11);d.text("5. Personal",M+2,y);y+=7;
+ d.setFontSize(9.5);["Nombre","Cargo","Uniforme","Presentación","Firma"].forEach((h,i)=>d.text(h,[M+2,62,104,128,158][i],y));y+=2;
+ S.staff.forEach(p=>{nl(14);d.setDrawColor(210);d.line(M,y,W-M,y);d.setFont("helvetica","normal");d.text(d.splitTextToSize(p.n||"",44),M+2,y+5);d.text(d.splitTextToSize(p.c||"",40),62,y+5);
+  [[p.u,104],[p.p,128]].forEach(([v,x])=>{d.setFont("helvetica","bold");if(v==="si"){d.setTextColor(31,122,69);d.text("Sí",x,y+5)}else if(v==="no"){d.setTextColor(179,38,30);d.text("No",x,y+5)}else{d.setTextColor(150);d.text("—",x,y+5)}d.setTextColor(0)});
+  if(p.f){try{d.addImage(p.f,"PNG",158,y+1,30,10.5)}catch(e){}}y+=13});
+ d.line(M,y,W-M,y);y+=8;
+ nl(24);d.setFont("helvetica","bold");d.setFontSize(11);d.text("Observaciones",M,y);y+=5;d.setFont("helvetica","normal");d.setFontSize(10);
+ const ob=d.splitTextToSize(S.obs||"Sin observaciones.",W-2*M);ob.forEach(l=>{nl(5);d.text(l,M,y);y+=5});y+=8;
+ nl(34);if(S.firma){try{d.addImage(S.firma,"PNG",M,y,50,17.5)}catch(e){}}y+=19;d.setDrawColor(0);d.line(M,y,M+70,y);y+=5;d.setFont("helvetica","bold");d.text("Administrador",M,y);y+=5;d.setFont("helvetica","normal");d.text(S.admin||"",M,y);
+ const now=new Date(),gen=now.toLocaleDateString("es-CO")+" "+now.toLocaleTimeString("es-CO",{hour:"2-digit",minute:"2-digit"});
+ const np=d.getNumberOfPages();for(let i=1;i<=np;i++){d.setPage(i);d.setFontSize(8);d.setTextColor(110);d.setFont("helvetica","normal");d.text("OP-001 · Elaborado por: "+(S.admin||"—")+" · Generado el "+gen,M,271);d.text("Página "+i+" de "+np,W-M,271,{align:"right"})}
+ return d}
+$("gen").onclick=async()=>{const m=$("msg");m.className="";m.textContent="";
+ if(!S.admin.trim()){m.className="err";m.textContent="Escribe tu nombre en “Administrador responsable” antes de generar el PDF.";$("admin").focus();return}
+ if(!window.jspdf){m.textContent="Preparando PDF…";await new Promise(r=>{const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";s.onload=r;s.onerror=r;document.head.appendChild(s)});m.textContent="";if(!window.jspdf){m.className="err";m.textContent="No se pudo cargar el generador de PDF. Revisa tu conexión e intenta de nuevo.";return}}
+ try{const d=build();const buf=d.output("arraybuffer");
+  const nm=S.admin.trim().replace(/[^\p{L}\p{N}]+/gu,"_").replace(/^_|_$/g,"");
+  const file="OP-001_Apertura_"+(S.fecha||today())+"_"+nm+".pdf";
+  const blob=new Blob([buf],{type:"application/pdf"});
+  let dl=null;try{if(typeof claude!=="undefined"&&claude.use)dl=await claude.use("downloads")}catch(e){}
+  if(dl){await dl.save({filename:file,data:buf})}
+  else{const f=new File([blob],file,{type:"application/pdf"});
+   if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:file})}catch(e){if(e&&e.name!=="AbortError")throw e}}
+   else{const u=URL.createObjectURL(blob);const a=document.createElement("a");a.href=u;a.download=file;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}}
+  const miss=ALL.filter(k=>!(S.items[k]&&S.items[k].v)).length;
+  m.className="okm";m.textContent="PDF listo: "+file+(miss?" (quedaron "+miss+" ítems sin responder, aparecen con “—”).":"")}
+ catch(e){if(e&&e.code==="declined"){m.textContent="Descarga cancelada."}else{m.className="err";m.textContent="No se pudo generar el PDF."+(e&&e.message?" "+e.message:"")}}};
+let rt;$("rst").onclick=()=>{const b=$("rst");if(!rt){b.textContent="Toca de nuevo para borrar todo";rt=setTimeout(()=>{rt=0;b.textContent="Empezar un formato nuevo"},3500);return}
+ clearTimeout(rt);rt=0;const a=S.admin;S=blank();S.admin=a;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}location.reload()};
+renderSecs();renderStaff();progress();
+}catch(err){var b=document.createElement("div");b.style.cssText="padding:12px;margin:12px;border:1px solid #b3261e;color:#b3261e;border-radius:10px;font:14px system-ui";b.textContent="Error al cargar: "+err.message;document.body.prepend(b)}})();
+</script>
+</body>
+</html>
